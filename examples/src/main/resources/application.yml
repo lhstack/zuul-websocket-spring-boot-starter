@@ -1,0 +1,31 @@
+server:
+  port: 9999
+zuul:
+  routes:
+    test1:
+      path: /test1/**
+      url: http://82.157.123.54:9010
+      stripPrefix: true
+    test2:
+      path: /test2/**
+      url: http://localhost:8080
+      stripPrefix: true
+    test3:
+      path: /test3/**
+      url: https://socket.idcd.com:1443
+      stripPrefix: true
+    test4:
+    # 此地址无法被代理，暂时不清楚是什么问题
+      path: /test4/**
+      url: http://121.40.165.18:8800
+  websocket:
+    hand-shake-handler-class: com.lhstack.zuul.websocket.handler.NettyProxyWebSocketHandShakeHandler
+    ssl:
+      test3:
+        keyStorePath: classpath:server.pfx
+        keyStoreType: PKCS12
+        keyStorePass: 123456
+        keyPass: 123456
+spring:
+  application:
+    name: zuul-server

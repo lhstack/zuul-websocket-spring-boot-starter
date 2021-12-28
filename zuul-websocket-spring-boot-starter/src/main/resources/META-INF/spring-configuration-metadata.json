@@ -1,0 +1,25 @@
+{
+  "groups": [
+    {
+      "name": "zuul.websocket",
+      "type": "com.lhstack.zuul.websocket.properties.ZuulWebSocketProxyProperties",
+      "sourceType": "com.lhstack.zuul.websocket.config.ZuulWsProxyFilterConfiguration",
+      "sourceMethod": "webSocketProxyProperties()"
+    }
+  ],
+  "properties": [
+    {
+      "name": "zuul.websocket.hand-shake-handler-class",
+      "type": "java.lang.Class<? extends com.lhstack.zuul.websocket.handler.AbstractWebSocketHandShakeHandler>",
+      "description": "代理处理器",
+      "sourceType": "com.lhstack.zuul.websocket.properties.ZuulWebSocketProxyProperties"
+    },
+    {
+      "name": "zuul.websocket.ssl",
+      "type": "java.util.Map<java.lang.String,com.lhstack.zuul.websocket.properties.ZuulWebSocketProxyProperties$SslProperties>",
+      "description": "key为route id value为sslProperties配置",
+      "sourceType": "com.lhstack.zuul.websocket.properties.ZuulWebSocketProxyProperties"
+    }
+  ],
+  "hints": []
+}
