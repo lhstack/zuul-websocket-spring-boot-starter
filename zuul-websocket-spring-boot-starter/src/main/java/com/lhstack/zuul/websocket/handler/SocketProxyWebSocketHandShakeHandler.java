@@ -6,7 +6,6 @@ import com.lhstack.zuul.websocket.utils.SslUtils;
 import org.apache.commons.lang.StringUtils;
 
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLEngine;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
@@ -20,7 +19,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author lhstack
@@ -48,7 +46,6 @@ public class SocketProxyWebSocketHandShakeHandler extends AbstractWebSocketHandS
         socket.connect(new InetSocketAddress(this.hostInfo.getHost(), this.hostInfo.getPort()));
         Socket finalSocket = socket;
         CountDownLatch countDownLatch = new CountDownLatch(1);
-        AtomicBoolean isHandshake = new AtomicBoolean(false);
         CompletableFuture.runAsync(() -> {
             try {
                 InputStream in = finalSocket.getInputStream();
@@ -68,8 +65,9 @@ public class SocketProxyWebSocketHandShakeHandler extends AbstractWebSocketHandS
                                 String value = StringUtils.strip(kvArray[1]);
                                 response.setHeader(key, value);
                                 response.setStatus(101);
-                                isHandshake.set(true);
                             }
+                            SocketProxyWebSocketUpgradeHandler upgrade = request.upgrade(SocketProxyWebSocketUpgradeHandler.class);
+                            upgrade.setSocket(finalSocket);
                         } else {
                             finalSocket.close();
                         }
@@ -98,10 +96,6 @@ public class SocketProxyWebSocketHandShakeHandler extends AbstractWebSocketHandS
         out.write(handshakeData.toString().getBytes(StandardCharsets.UTF_8));
         out.flush();
         countDownLatch.await();
-        if (isHandshake.get()) {
-            SocketProxyWebSocketUpgradeHandler upgrade = request.upgrade(SocketProxyWebSocketUpgradeHandler.class);
-            upgrade.setSocket(socket);
-        }
     }
 
     private Socket buildSslSocket() throws Exception {
